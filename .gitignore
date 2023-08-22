@@ -1,0 +1,35 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# jetbrains
+.idea
+
+# MacOS
+.DS_Store
+
+# coverage report
+cover.out
+coverage-report.json
+report.xml
+
+# build
+bin/
+vendor/
+tester
+
+# env files
+**/*.bk
+*/.env
+**/.env
+**/**/.env
+**/config.yml

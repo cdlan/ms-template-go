@@ -1,0 +1,13 @@
+port: 4445
+debug: true
+database:
+  username:
+  password:
+  hostname:
+  port:
+  database:
+  schema:
+open_telemetry:
+  enabled: false
+  exporter: 2
+  collector_url: 'jaeger:4317'

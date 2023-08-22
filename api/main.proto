@@ -1,0 +1,24 @@
+syntax = "proto3";
+option go_package = "./;gen";
+package main;
+
+//
+// STYLE GUIDE: https://protobuf.dev/programming-guides/style/
+//
+
+service Service {
+  rpc StreamMethod(GetAll) returns (stream Item);
+  rpc UnaryMethod(Get) returns (Item);
+}
+
+message GetAll {
+
+}
+
+message Get {
+    
+}
+
+message Item {
+    
+}

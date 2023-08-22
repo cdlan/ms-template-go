@@ -1,0 +1,34 @@
+# stages:
+#   - test
+#   - docker
+#   - security
+#   - deploy
+
+# include:
+#   - project: 'automation/ci-template'
+#     file: 'security/container-scan.yml'
+#   - project: 'automation/ci-template'
+#     file: 'docker/build_docker_version.yml'
+
+# variables:
+#   VERSION_FILE: "cmd/server/server.go"
+
+# build_executables:test:
+#   stage: test
+#   image: golang
+#   script:
+#     - curl -sfL https://raw.githubusercontent.com/Dav-11/go-xbuild-script/main/xbuild.sh | sh -
+#   rules:
+#     - if: $CI_COMMIT_BRANCH == 'main'
+#     - if: $CI_COMMIT_BRANCH =~ /^v[0-9]+\.[0-9]+$/
+#     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+# deploy-job:      # This is a placeholder, will be replaced with K8 deploy
+#   stage: deploy
+#   environment: production
+#   script:
+#     - echo "Deploying application..."
+#     - echo "Application successfully deployed."
+#   rules:
+#     - if: $CI_COMMIT_BRANCH == 'main'
+#     - if: $CI_COMMIT_BRANCH =~ /^v[0-9]+\.[0-9]+$/
