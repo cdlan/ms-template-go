@@ -6,7 +6,7 @@ package main;
 // STYLE GUIDE: https://protobuf.dev/programming-guides/style/
 //
 
-service Service {
+service Example {
   rpc StreamMethod(GetAll) returns (stream Item);
   rpc UnaryMethod(Get) returns (Item);
 }

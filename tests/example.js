@@ -26,7 +26,7 @@ export function unaryCall() {
     client.connect('localhost:4445', {plaintext: true});
 
     const data = { "param": 2 };
-    const response = client.invoke('main.Service/Method', data);
+    const response = client.invoke('main.Example/UnaryMethod', data);
 
     check(response, {
         'status is OK': (r) => r && r.status === grpc.StatusOK,
@@ -53,7 +53,7 @@ export function streamCall() {
     client.connect('localhost:4445', {plaintext: true});
 
     const data = { "empty": {}};
-    const stream = new grpc.Stream(client, 'main.Service/Method');
+    const stream = new grpc.Stream(client, 'main.Example/StreamMethod');
 
     // print what received
     stream.on('data', (category) => {

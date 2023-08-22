@@ -10,6 +10,8 @@ import (
 
 	"cdlab.cdlan.net/cdlan/uservices/ms-template/internal/config"
 	"cdlab.cdlan.net/cdlan/uservices/ms-template/internal/database"
+	"cdlab.cdlan.net/cdlan/uservices/ms-template/internal/grpc/gen"
+	grpcimpl "cdlab.cdlan.net/cdlan/uservices/ms-template/internal/grpc"
 )
 
 const (
@@ -74,7 +76,7 @@ func main() {
 	grpcServer := grpc.NewServer(opts...)
 
 	//TODO:  register servers
-	// ES: gen.RegisterKitServer(grpcServer, grpcimplementation.NewKitServer())
+	gen.RegisterExampleServer(grpcServer, grpcimpl.NewExampleServer())
 
 
 	reflection.Register(grpcServer)
