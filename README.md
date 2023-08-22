@@ -10,7 +10,7 @@ Template x go microservices
 4. Uncomment all rows from [.gitlab-ci.yml](.gitlab-ci.yml) to enable pipelines
 
 ## Start developing
-1. Create .proto files in [api](api/) folder
+1. Edit .proto files in [api](api/) folder
 2. Run script x classes generation [gen_grpc_classes.sh](scripts/gen_grpc_classes.sh)
 3. In [grpc](internal/grpc) create a file for each service that you defined and implement the service servers and add a NewXYZServer() that return a pointer to the server
 4. In [server.go](cmd/server/server.go) register the newly created servers
