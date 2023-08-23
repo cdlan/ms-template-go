@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package network_coverages;
+option go_package = "./;gen";
+
+
+message Address {
+  string province = 1;
+  string city = 2;
+  string address = 3;
+  string house_number = 4;
+}
+
+message CoverageInfo {
+  string carrier_name = 1;
+  string technology = 2;
+}
+
+message CommercialProfile {
+  string name = 1;
+  int32 upstream_bandwidth = 2;
+  int32 downstream_bandwidth = 3;
+}
+
+message GetCoverageRequest {
+  Address address = 1;
+}
+
+message GetCoverageResponse {
+  repeated CoverageInfo coverage_infos = 1;
+}
+
+message GetCoverageKitRequest {
+  Address address = 1;
+}
+
+message GetCoverageKitResponse {
+  repeated KitInfo kits = 1;
+}
+
+message QuerySpecificCoverageRequest {
+  Address address = 1;
+  repeated string commercial_profiles = 2;
+  repeated string available_carriers = 3;
+}
+
+message QuerySpecificCoverageResponse {
+  repeated CoverageInfo coverage_infos = 1;
+}
+
+message KitInfo {
+  string carrier = 1;
+  string technology = 2;
+  CommercialProfile commercial_profile = 3;
+}
+
+message RelatedProduct {
+  string name = 1;
+  string description = 2;
+  float price = 3;
+}
+
+message GetCarrierListResponse {
+  repeated Carrier carrier_list = 1;
+}
+
+message Carrier {
+  string name = 1;
+  string logo_url = 2;
+  string main_color = 3;
+}
+message State {
+  uint64 id = 1;
+  string name = 2;
+  string abbreviation = 3;
+}
+
+message GetStatesResponse {
+  repeated State states = 1;
+}
+
+
+

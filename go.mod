@@ -1,6 +1,6 @@
 module cdlab.cdlan.net/cdlan/uservices/ms-template
 
-go 1.21.0
+go 1.19
 
 require github.com/spf13/viper v1.16.0
 

@@ -1,24 +1,17 @@
 syntax = "proto3";
 option go_package = "./;gen";
+import "google/protobuf/empty.proto";
 package main;
 
+import "coverage.proto";
 //
 // STYLE GUIDE: https://protobuf.dev/programming-guides/style/
 //
 
-service Example {
-  rpc StreamMethod(GetAll) returns (stream Item);
-  rpc UnaryMethod(Get) returns (Item);
-}
-
-message GetAll {
-
-}
-
-message Get {
-    
-}
-
-message Item {
-    
+service CoverageService {
+  rpc GetCoverage(network_coverages.GetCoverageRequest) returns (stream network_coverages.GetCoverageResponse);
+  rpc GetCoverageKit(network_coverages.GetCoverageKitRequest) returns (stream network_coverages.GetCoverageKitResponse);
+  rpc QuerySpecificCoverage(network_coverages.QuerySpecificCoverageRequest) returns (stream network_coverages.QuerySpecificCoverageResponse);
+  rpc GetStates(google.protobuf.Empty) returns (stream network_coverages.GetStatesResponse);
+  rpc GetCarrierList(google.protobuf.Empty) returns (stream network_coverages.GetCarrierListResponse);
 }
