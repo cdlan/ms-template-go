@@ -1,10 +1,12 @@
-# stages:
-#   - test
-#   - docker
-#   - security
-#   - deploy
+ stages:
+   - test
+   - docker
+   - security
+   - deploy
 
-# include:
+ include:
+    - project: 'automation/ci-template'
+      file: 'unit-tests/golang.yml'
 #   - project: 'automation/ci-template'
 #     file: 'security/container-scan.yml'
 #   - project: 'automation/ci-template'

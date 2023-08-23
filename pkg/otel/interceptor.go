@@ -3,7 +3,11 @@ package otel
 import (
 	"context"
 	"fmt"
+	"go.opentelemetry.io/otel/trace"
+	"strings"
+
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"google.golang.org/grpc"
 )
@@ -17,7 +21,8 @@ func (c *Config) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 		}
 
 		traceName := info.FullMethod
-		newCtx, span := otel.Tracer(traceName).Start(ctx, info.FullMethod)
+
+		newCtx, span := CreateSpan(ctx, info.FullMethod)
 		defer span.End()
 
 		// save trace name in context
@@ -42,7 +47,7 @@ func (c *Config) StreamServerInterceptor() grpc.StreamServerInterceptor {
 
 		traceName := info.FullMethod
 
-		newCtx, span := otel.Tracer(traceName).Start(stream.Context(), info.FullMethod)
+		newCtx, span := CreateSpan(stream.Context(), info.FullMethod)
 		defer span.End()
 
 		// save trace name in context
@@ -85,4 +90,35 @@ func (w *wrappedStream) SendMsg(m interface{}) error {
 	w.ctx = newCtx
 
 	return w.ServerStream.SendMsg(m)
+}
+
+func CreateSpan(ctx context.Context, FullMethodName string) (context.Context, trace.Span) {
+
+	completeMethodName := ExtractFullMethodNameFromInfoFullMethod(FullMethodName)
+
+	newCtx, span := otel.Tracer(completeMethodName).Start(ctx, completeMethodName)
+	span.SetAttributes(attribute.String("rpc.system", "grpc"))
+
+	serviceName, methodName := GetServiceAndMethodFromInfoFullMethod(FullMethodName)
+
+	span.SetAttributes(attribute.String("rpc.service", serviceName))
+	span.SetAttributes(attribute.String("rpc.method", methodName))
+
+	return newCtx, span
+}
+
+func ExtractFullMethodNameFromInfoFullMethod(FullMethod string) string {
+
+	_, methodName, _ := strings.Cut(FullMethod, "/")
+
+	return methodName
+}
+
+func GetServiceAndMethodFromInfoFullMethod(FullMethod string) (string, string) {
+
+	fullMethodName := ExtractFullMethodNameFromInfoFullMethod(FullMethod)
+
+	serviceName, methodName, _ := strings.Cut(fullMethodName, "/")
+
+	return serviceName, methodName
 }
