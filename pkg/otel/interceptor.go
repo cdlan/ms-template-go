@@ -20,13 +20,8 @@ func (c *Config) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 			return handler(ctx, req)
 		}
 
-		traceName := info.FullMethod
-
 		newCtx, span := CreateSpan(ctx, info.FullMethod)
 		defer span.End()
-
-		// save trace name in context
-		newCtx = context.WithValue(newCtx, "trace_name", traceName)
 
 		resp, err = handler(newCtx, req)
 		if err != nil {
@@ -45,13 +40,8 @@ func (c *Config) StreamServerInterceptor() grpc.StreamServerInterceptor {
 			return handler(srv, stream)
 		}
 
-		traceName := info.FullMethod
-
 		newCtx, span := CreateSpan(stream.Context(), info.FullMethod)
 		defer span.End()
-
-		// save trace name in context
-		newCtx = context.WithValue(newCtx, "trace_name", traceName)
 
 		err := handler(srv, &wrappedStream{stream, newCtx})
 		if err != nil {
@@ -103,6 +93,9 @@ func CreateSpan(ctx context.Context, FullMethodName string) (context.Context, tr
 
 	span.SetAttributes(attribute.String("rpc.service", serviceName))
 	span.SetAttributes(attribute.String("rpc.method", methodName))
+
+	// save trace name in context
+	newCtx = context.WithValue(newCtx, "trace_name", completeMethodName)
 
 	return newCtx, span
 }
