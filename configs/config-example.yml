@@ -1,4 +1,4 @@
-port: 4445
+grpc_port: 4445
 debug: true
 database:
   username:

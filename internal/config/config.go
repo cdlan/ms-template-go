@@ -10,20 +10,20 @@ import (
 )
 
 type GlobalConfig struct {
-	DB    DBConfig    `mapstructure:"database"`
-	Port  int         `mapstructure:"port"`
-	Debug bool        `mapstructure:"debug_active"`
-	Otel  otel.Config `mapstructure:"open_telemetry"`
+	DB       DBConfig    `mapstructure:"database"`
+	GrpcPort int         `mapstructure:"grpc_port"`
+	Debug    bool        `mapstructure:"debug_active"`
+	Otel     otel.Config `mapstructure:"open_telemetry"`
 }
 
 // Default generates a GlobalConfig with default values
 func Default() GlobalConfig {
 
 	return GlobalConfig{
-		Port:  80,
-		Debug: false,
-		DB:    DefaultDB(),
-		Otel:  otel.Default(),
+		GrpcPort: 4445,
+		Debug:    false,
+		DB:       DefaultDB(),
+		Otel:     otel.Default(),
 	}
 }
 
@@ -47,10 +47,10 @@ func (C *GlobalConfig) loadVarsFromYaml() {
 func (C *GlobalConfig) loadVarsFromEnv() {
 
 	// Web
-	WebPortStr, ok := os.LookupEnv("LISTEN_PORT")
+	WebPortStr, ok := os.LookupEnv("GRPC_PORT")
 	if ok {
 
-		C.Port = stringToInt(WebPortStr)
+		C.GrpcPort = stringToInt(WebPortStr)
 	}
 
 	DebugStr, ok := os.LookupEnv("DEBUG_ENABLED")
@@ -65,7 +65,7 @@ func (C *GlobalConfig) loadVarsFromEnv() {
 
 // GetListenAddress returns the address string the socket will be listening to
 func (C *GlobalConfig) GetListenAddress() string {
-	return fmt.Sprintf(":%d", C.Port)
+	return fmt.Sprintf(":%d", C.GrpcPort)
 }
 
 var C GlobalConfig
