@@ -7,7 +7,8 @@ Template x go microservices
 1. Edit `go.mod` with the name of your project (and update all import statements)
 2. Edit `serviceName` in [server.go](cmd/server/server.go) with the name of the service
 3. Edit `app.image` in [docker-compose.yaml](deployments/docker/docker-compose.yaml)
-4. Uncomment all rows from [.gitlab-ci.yml](.gitlab-ci.yml) to enable pipelines
+4. (optional) Uncomment all rows from [.gitlab-ci.yml](.gitlab-ci.yml) to enable pipelines
+5. Register project in [sonarqube](https://sonar.cdlan.net/)
 
 ## Start developing
 1. Edit .proto files in [api](api/) folder
