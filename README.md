@@ -2,6 +2,12 @@
 Template x go microservices
 
 
+[![Latest Release](https://cdlab.cdlan.net/uservices/misty-tickets/-/badges/release.svg)](https://cdlab.cdlan.net/cdlan/uservices/misty-tickets/-/releases)
+
+## Deploy instruction
+The microservice is packaged in a docker image, to deploy use the provided configs in the [deployments](./deployments) folder
+
+# Instructions - README
 ## Setup repo
 
 - [ ] Edit `go.mod` with the name of your project (and update all import statements)
