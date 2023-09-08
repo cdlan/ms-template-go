@@ -1,8 +1,8 @@
 # ms template
 Template x go microservices
 
-
-[![Latest Release](https://cdlab.cdlan.net/uservices/misty-tickets/-/badges/release.svg)](https://cdlab.cdlan.net/cdlan/uservices/misty-tickets/-/releases)
+## Badges
+[![Latest Release](https://cdlab.cdlan.net/uservices/ms-template/-/badges/release.svg)](https://cdlab.cdlan.net/cdlan/uservices/ms-template/-/releases)
 
 ## Deploy instruction
 The microservice is packaged in a docker image, to deploy use the provided configs in the [deployments](./deployments) folder
@@ -20,7 +20,7 @@ Requirements: install [go](https://go.dev/dl/)
 - [ ] (optional) Uncomment all rows from [.gitlab-ci.yml](.gitlab-ci.yml) to enable pipelines
 - [ ] Register project in [sonarqube](https://sonar.cdlan.net/)
 
-## Start developing
+## Quick Start
 1. Edit .proto files in [api](api/) folder
 2. Run script x classes generation [gen_grpc_classes.sh](scripts/gen_grpc_classes.sh)
 3. In [grpc](internal/grpc) create a file for each service that you defined and implement the service servers and add a NewXYZServer() that return a pointer to the server
