@@ -7,8 +7,8 @@ Template x go microservices
 ## Deploy instruction
 The microservice is packaged in a docker image, to deploy use the provided configs in the [deployments](./deployments) folder
 
-## Develop
-Requirements: install [go](https://go.dev/dl/)
+## Develop Requirements
+- install [go](https://go.dev/dl/)
 > Make sure to install the version indicated in the [go.mod](./go.mod) file
 
 # Instructions - README
