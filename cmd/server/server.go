@@ -10,8 +10,10 @@ import (
 
 	"cdlab.cdlan.net/cdlan/uservices/ms-template/internal/config"
 	"cdlab.cdlan.net/cdlan/uservices/ms-template/internal/database"
-	"cdlab.cdlan.net/cdlan/uservices/ms-template/internal/grpc/gen"
 	grpcimpl "cdlab.cdlan.net/cdlan/uservices/ms-template/internal/grpc"
+	"cdlab.cdlan.net/cdlan/uservices/ms-template/internal/grpc/gen"
+	"google.golang.org/grpc/health"
+	healthgrpc "google.golang.org/grpc/health/grpc_health_v1"
 )
 
 const (
@@ -76,8 +78,9 @@ func main() {
 	grpcServer := grpc.NewServer(opts...)
 
 	//TODO:  register servers
+	healthcheck := health.NewServer()
+	healthgrpc.RegisterHealthServer(grpcServer, healthcheck)
 	gen.RegisterExampleServer(grpcServer, grpcimpl.NewExampleServer())
-
 
 	reflection.Register(grpcServer)
 
