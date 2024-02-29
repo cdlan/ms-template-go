@@ -1,8 +1,8 @@
- stages:
-   - test
-   - build
-   - deploy
-   - release
+stages:
+  - test
+  - build
+  - deploy
+  - release
 
 variables:
   DOCS_VERSION_FILE: "docs/index.md"
