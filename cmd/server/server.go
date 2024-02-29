@@ -5,15 +5,18 @@ import (
 	"log"
 	"net"
 
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
+	"ms-template-go/internal/config"
+	"ms-template-go/internal/database"
+	grpcimpl "ms-template-go/internal/grpc"
+	"ms-template-go/internal/grpc/gen"
+	"ms-template-go/internal/migrations"
+	prom "ms-template-go/pkg/prometheus"
 
-	"cdlab.cdlan.net/cdlan/uservices/ms-template/internal/config"
-	"cdlab.cdlan.net/cdlan/uservices/ms-template/internal/database"
-	grpcimpl "cdlab.cdlan.net/cdlan/uservices/ms-template/internal/grpc"
-	"cdlab.cdlan.net/cdlan/uservices/ms-template/internal/grpc/gen"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	healthgrpc "google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/reflection"
 )
 
 const (
@@ -26,21 +29,26 @@ func init() {
 	// load config
 	config.LoadConfiguration()
 
-	// otel
-	if config.C.Otel.Enabled {
+	// migrate
+	migrations.Migrate(config.C.DB.MigrationPath, config.C.DB.GetURL(), migrations.UP)
 
-		// exporter
-		exporter, err := config.C.Otel.NewTracerProvider()
-		if err != nil {
-			panic(err)
-		}
+	// init DB
+	config.C.DB.Init(config.C.Otel.Enabled)
 
-		res := config.C.Otel.NewResource(serviceName, version)
-		config.C.Otel.InitTracerProvider(res, exporter)
+	// init otel
+	err := config.C.Otel.Init(serviceName, version)
+	if err != nil {
+		panic(err)
 	}
 
-	// connect to DB
-	database.Init()
+	// prometheus config
+	prom.Conf = prom.Config{
+		Port: 2112,
+		Path: "/metrics",
+	}
+
+	// start exposing metrics
+	prom.Conf.ExposeMetrics()
 }
 
 func main() {
@@ -66,22 +74,17 @@ func main() {
 	}
 
 	// log
-	if config.C.Debug {
-		log.Printf("[%s:%s] Started Listener on %s", serviceName, version, listenAddress)
-	}
+	log.Printf("[%s:%s] Started Listener on %s", serviceName, version, listenAddress)
 
-	var opts []grpc.ServerOption
+	grpcServer := grpc.NewServer(
+		grpc.StatsHandler(otelgrpc.NewServerHandler()),
+	)
 
-	opts = append(opts, grpc.UnaryInterceptor(config.C.Otel.UnaryServerInterceptor()))
-	opts = append(opts, grpc.StreamInterceptor(config.C.Otel.StreamServerInterceptor()))
-
-	grpcServer := grpc.NewServer(opts...)
-
-	//TODO:  register servers
-	healthcheck := health.NewServer()
-	healthgrpc.RegisterHealthServer(grpcServer, healthcheck)
+	// register servers
+	healthgrpc.RegisterHealthServer(grpcServer, health.NewServer())
 	gen.RegisterExampleServer(grpcServer, grpcimpl.NewExampleServer())
 
+	// add reflections
 	reflection.Register(grpcServer)
 
 	// start listening

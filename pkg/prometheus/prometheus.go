@@ -7,18 +7,6 @@ import (
 	"net/http"
 )
 
-func init() {
-
-	// prometheus config
-	Conf = Config{
-		Port: 2112,
-		Path: "/metrics",
-	}
-
-	// start exposing metrics
-	Conf.ExposeMetrics()
-}
-
 type Config struct {
 	Port int
 	Path string
