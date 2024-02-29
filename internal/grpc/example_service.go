@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"cdlab.cdlan.net/cdlan/uservices/ms-template/internal/config"
-	"cdlab.cdlan.net/cdlan/uservices/ms-template/internal/grpc/gen"
+	"ms-template-go/internal/config"
+	"ms-template-go/internal/grpc/gen"
 )
 
 type ExampleServer struct {

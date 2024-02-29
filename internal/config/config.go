@@ -3,63 +3,81 @@ package config
 import (
 	"fmt"
 	"log"
+	"ms-template-go/internal/database"
+	"ms-template-go/pkg/utils"
 	"os"
 
-	"cdlab.cdlan.net/cdlan/uservices/ms-template/pkg/otel"
+	otel "github.com/cdlan/lib-otel"
 	"github.com/spf13/viper"
 )
 
 type GlobalConfig struct {
-	DB       DBConfig    `mapstructure:"database"`
-	GrpcPort int         `mapstructure:"grpc_port"`
-	Debug    bool        `mapstructure:"debug_active"`
+	DB       database.Config `mapstructure:"database"`
 	Otel     otel.Config `mapstructure:"open_telemetry"`
+
+	// Debug if true shows more logs and info
+	Debug bool `mapstructure:"debug_active"`
+
+	// GrpcPort is the port the grpc server will listen to
+	GrpcPort int `mapstructure:"grpc_port"`
 }
 
-// Default generates a GlobalConfig with default values
-func Default() GlobalConfig {
+// Default populates GlobalConfig with default values
+func (C *GlobalConfig) Default() {
 
-	return GlobalConfig{
-		GrpcPort: 4445,
-		Debug:    false,
-		DB:       DefaultDB(),
-		Otel:     otel.Default(),
-	}
+	C.GrpcPort = 4445
+	C.Debug = true
+	C.DB.Default()
+	C.Otel.Default()
 }
+
+// Make sure we conform to ConfigInterface
+var _ ConfigInterface = (*GlobalConfig)(nil)
+var _ ConfigInterface = (*database.Config)(nil)
+var _ ConfigInterface = (*otel.Config)(nil)
 
 // loadVarsFromYaml reads vars from yaml file and overrides current values if new value found
 func (C *GlobalConfig) loadVarsFromYaml() {
 	viper.SetConfigName("config.yml")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("./configs")
+	viper.AddConfigPath("/configs")
 	viper.AddConfigPath(".")
 
 	if err := viper.ReadInConfig(); err != nil {
 		log.Println("Config file not found!")
 	}
 
-	if err := viper.Unmarshal(&C); err != nil {
-		log.Println(err)
+	if err := viper.Unmarshal(C); err != nil {
+		log.Println("Viper failed to unmarshall config: ", err)
 	}
 }
 
-// loadVarsFromEnv looks for GlobalConfig values in ENV VAR, if found, overrides previous values
-func (C *GlobalConfig) loadVarsFromEnv() {
+// LoadVarsFromEnvVar looks for GlobalConfig values in ENV VAR, if found, overrides previous values
+func (C *GlobalConfig) LoadVarsFromEnv() {
 
 	// Web
 	WebPortStr, ok := os.LookupEnv("GRPC_PORT")
 	if ok {
 
-		C.GrpcPort = stringToInt(WebPortStr)
+		var err error
+		C.GrpcPort, err = utils.StringToInt(WebPortStr)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 
 	DebugStr, ok := os.LookupEnv("DEBUG_ENABLED")
 	if ok {
 
-		C.Debug = stringToBool(DebugStr)
+		var err error
+		C.Debug, err = utils.StringToBool(DebugStr)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 
-	C.DB.loadVarsFromEnv()
+	C.DB.LoadVarsFromEnv()
 	C.Otel.LoadVarsFromEnv()
 }
 
@@ -72,9 +90,9 @@ var C GlobalConfig
 
 func LoadConfiguration() {
 
-	C = Default()
+	C.Default()
 	C.loadVarsFromYaml()
-	C.loadVarsFromEnv()
+	C.LoadVarsFromEnv()
 
 	if C.Debug {
 		log.Println("LOADED ENV: ", C)

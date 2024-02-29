@@ -1,0 +1,26 @@
+site_name: Example Microservice go Docs
+site_url: http://localhost:9090
+repo_url: https://git.cdlan.net/applications/uservices/ms-template-go
+theme:
+  name: readthedocs
+plugins:
+  - search
+  - mermaid2
+  - plantuml:
+      puml_url: https://www.plantuml.com/plantuml/
+
+markdown_extensions:
+  - toc:
+      permalink: "#"
+
+#nav:
+#  - 'Home': index.md
+#  - 'Architectural Design':
+#      - 'Problem': arch/problem.md
+#      - 'External Interfaces': arch/ext_interfaces.md
+#      - 'Database': arch/database.md
+#  - 'Deployment':
+#      - 'Configuration': arch/configuration.md
+#  - 'Developer Guide':
+#      - 'Migrations': developer-guide/migrations.md
+#      - 'Custom Errors': developer-guide/errors.md

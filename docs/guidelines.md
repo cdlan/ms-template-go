@@ -10,9 +10,6 @@ The docs folder contains all documentation for project (better if readable direc
 - Add Dockerfile in `/build` folder (or subfolder)
 - If the microservice has dependencies (DB or other ms) add a `docker-compose.yml` file in `/deployments/docker`
 
-## devcontainer
-Add devcontainer conf that use the same `docker-compose.yml` (if multicontainer) or `Dockerfile` as the final deployment/build (or share the same base)
-
 ## Config
 - Add in `/config` example file for configs (EG: if config is config.yml -> config-example.yml) with safe values (no prod values and no passwords)
 - Add real config files to gitignore
