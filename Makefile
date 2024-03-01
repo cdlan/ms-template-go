@@ -1,4 +1,5 @@
 MODULE_NAME := ms-template-go
+IMAGE_NAME := ms-template-go
 
 .PHONY: build
 build:
@@ -9,12 +10,12 @@ run:
 	go run cmd/server/server.go
 
 docker:
-	docker build -t $(MODULE_NAME):local -f build/Dockerfile .
+	docker build -t $(IMAGE_NAME):local -f build/Dockerfile .
 
 .PHONY: docs
 docs:
-	docker build -t $(MODULE_NAME)/docs:main -f build/docs.Dockerfile .
-	docker run --rm --name server-docs -p 9090:80 $(MODULE_NAME)/docs:main
+	docker build -t $(IMAGE_NAME)/docs:main -f build/docs.Dockerfile .
+	docker run --rm --name server-docs -p 9090:80 $(IMAGE_NAME)/docs:main
 
 grpc:
 	scripts/gen_grpc_classes.sh
