@@ -38,7 +38,9 @@ func init() {
 	// init otel
 	err := config.C.Otel.Init(serviceName, version)
 	if err != nil {
-		panic(err)
+
+		log.Println(err)
+		config.C.Otel.Enabled = false
 	}
 
 	// prometheus config

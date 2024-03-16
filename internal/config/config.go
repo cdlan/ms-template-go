@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"log"
 	"ms-template-go/internal/database"
+	"ms-template-go/pkg/otel"
 	"ms-template-go/pkg/utils"
 	"os"
 
-	otel "github.com/cdlan/lib-otel"
 	"github.com/spf13/viper"
 )
 
 type GlobalConfig struct {
-	DB       database.Config `mapstructure:"database"`
-	Otel     otel.Config `mapstructure:"open_telemetry"`
+	DB   database.Config `mapstructure:"database"`
+	Otel otel.Config     `mapstructure:"open_telemetry"`
 
 	// Debug if true shows more logs and info
 	Debug bool `mapstructure:"debug_active"`
